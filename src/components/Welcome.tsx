@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback, useEffect } from 'react';
 import {
   createStyles, 
   makeStyles, 
@@ -7,7 +7,9 @@ import {
 } from '@material-ui/core';
 import Image from 'material-ui-image';
 import ParrotLogo from '../img/parrot-logo.png';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
+import { useAuth } from '../hooks/useAuth';
+import { useSelector } from 'react-redux';
 
 const useStyles = makeStyles((theme) => 
   createStyles({
@@ -29,7 +31,21 @@ const useStyles = makeStyles((theme) =>
 
 function Welcome() {
   const classes = useStyles();
+  const isAuth = useAuth();
+  const history = useHistory();
 
+  const pending: boolean = useSelector((state: any) => state.auth.pending);
+
+
+  const callRedirect = useCallback(() => {
+    if (isAuth && !pending) {
+      history.push('/dashboard')
+    }
+  }, [isAuth, pending, history]);
+  
+  useEffect(() => {
+    callRedirect();
+  }, [callRedirect]);
   return (
     <Grid container className={classes.welcome} justify="center" alignItems="center">
       <Grid item xs={3} md={3} xl={1} component={Link} to='/dashboard'>
