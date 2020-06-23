@@ -15,6 +15,8 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 import StyledTextField from './styled/StyledTextField';
 import { useInput } from '../hooks/useInput';
 import { createTransaction } from '../actions/Transations';
+import { getUsersList } from '../actions/UsersList';
+import debounce from 'lodash.debounce';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -35,9 +37,11 @@ function NewTransaction() {
   const copiedTransaction = useSelector((state: any) => state.transactions.copiedTransaction, shallowEqual);
   const error = useSelector((state: any) => state.transactions.error, shallowEqual);
   const pending = useSelector((state: any) => state.transactions.pending);
+  const usersList: {id: number, name: string}[] = useSelector((state: any) => state.usersList.usersList, shallowEqual);
   
   const { value: amount, bind: bindAmount, setValue: setAmount } = useInput('');
   const { value: user, bind: bindUser, setValue: setUser } = useInput('');
+
 
   useEffect(() => {
     if (Object.keys(copiedTransaction).length !== 0 && !pending) {
@@ -50,7 +54,26 @@ function NewTransaction() {
     e.preventDefault();
     const transaction = {name: user, amount: +amount};
     dispatch(createTransaction(transaction));
-  }, [user, amount, dispatch])
+  }, [user, amount, dispatch]);
+
+  const fetchListUsers = useCallback((q?: string) => {
+    dispatch(getUsersList(q));
+  }, [dispatch]);
+
+  const fetchListUsersCallback = useCallback(() => {
+    fetchListUsers();
+  }, [fetchListUsers]);
+
+  useEffect(() => {
+    fetchListUsersCallback();
+  }, [fetchListUsersCallback]);
+
+  const delayedQuery = useCallback(debounce((q: any) => fetchListUsers(q), 500), []);
+
+  const handleChange = (event: any, value: string) => {
+    setUser(value);
+    delayedQuery(value);
+  };
 
   return (
     <Grid item xs={12}>
@@ -66,12 +89,11 @@ function NewTransaction() {
               <Autocomplete
                 id="userlist"
                 freeSolo={true}
+                //value={filter}
                 value={user}
-                /*Захардкоженый список, т.к эндпоинт на получение
-                списка юзеров недоступен*/
-                options={['mr. Test', 'Konstantin Osetrov']}
-                getOptionLabel={(option: any) => option}
-                onInputChange={(e, value) => {setUser(value)}}
+                options={usersList.map(user => user.name)}
+                getOptionLabel={(option: any) => option }
+                onInputChange={handleChange}
                 renderInput={(params: any) => 
                   <StyledTextField 
                     label="Users list" 
@@ -97,6 +119,8 @@ function NewTransaction() {
                 }}
                 {...bindAmount}
               />
+              {/* валидация ошибок по полям должна происходить на сервере, 
+              поэтому здесь общая ошибка на форму */}
               {error && 
                 <Typography color="secondary">{error}</Typography>
               }

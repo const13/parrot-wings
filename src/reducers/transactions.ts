@@ -37,7 +37,8 @@ export default function transactionsReducer(state = initialState, action: UsersL
                 ...state, 
                 lastTransaction: action.payload, 
                 pending: action.isLoading, 
-                error: action.error 
+                error: action.error ,
+                copiedTransaction: {}
             }
         case CLEAR_TRANSACTIONS_LIST:
             return { 

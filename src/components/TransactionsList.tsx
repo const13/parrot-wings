@@ -87,7 +87,7 @@ function TransactionsList() {
               <TableHead>
                 <TableRow>
                   <TableCell>Date</TableCell>
-                  <TableCell>To:</TableCell>
+                  <TableCell>Name</TableCell>
                   <TableCell align="right">Amount</TableCell>
                   <TableCell align="right">Balance</TableCell>
                   <TableCell></TableCell>

@@ -18,6 +18,7 @@ export type UsersListAction = {
 const requestUsersList = () => ({
     type: USER_LIST_REQUEST,
     isLoading: true,
+    error: null,
 })
 
 const usersListError = (message = '') => ({
@@ -41,7 +42,8 @@ export const clearUsersList = () => ({
     error: null
 })
 
-const paramsUsersList = (filter: User) => {
+const paramsUsersList = (filter: string) => {
+    if (filter === '') filter = ' ';
     let params: RequestInit = {
         method: 'POST',
         //mode: 'no-cors',
@@ -49,12 +51,12 @@ const paramsUsersList = (filter: User) => {
             'Content-Type':'application/json',
             ...authHeader()
         },
-        body: JSON.stringify('kon')  
+        body: JSON.stringify({filter: filter})  
     }
     return params;
 };
 
-export function getUsersList(filter: any) {
+export function getUsersList(filter: string = ' ') {
     return async (dispatch: any) => {
         dispatch(requestUsersList())
     
@@ -64,8 +66,7 @@ export function getUsersList(filter: any) {
 
             if (response.ok) {
                 let usersList = JSON.parse(body);
-                console.log('usersList: ', usersList);
-                dispatch(usersListSuccess([]));
+                dispatch(usersListSuccess(usersList));
             } else {
                 dispatch(usersListError(body));
             }

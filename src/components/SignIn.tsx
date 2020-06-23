@@ -100,7 +100,7 @@ function SignIn() {
                 name="email"
                 autoComplete="email"
                 autoFocus
-                error={error}
+                error={error && error.length ? true : false}
                 helperText={error}
                 InputProps={{
                   startAdornment: (
@@ -121,7 +121,7 @@ function SignIn() {
                 type="password"
                 id="password"
                 autoComplete="current-password"
-                error={error}
+                error={error && error.length ? true : false}
                 helperText={error}
                 InputProps={{
                   startAdornment: (

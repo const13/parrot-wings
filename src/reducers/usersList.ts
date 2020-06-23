@@ -15,7 +15,6 @@ const initialState = {
 export default function usersListReducer(state = initialState, action: UsersListAction) {
     switch (action.type) {
         case USER_LIST_REQUEST:
-            return { ...state, pending: action.isLoading } 
         case USER_LIST_ERROR:
             return { ...state, pending: action.isLoading, error: action.error }
         case USER_LIST_SUCCESS:
