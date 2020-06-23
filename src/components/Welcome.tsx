@@ -3,7 +3,7 @@ import {
   createStyles, 
   makeStyles, 
   Typography,
-  Grid, 
+  Grid,
 } from '@material-ui/core';
 import Image from 'material-ui-image';
 import ParrotLogo from '../img/parrot-logo.png';
@@ -18,6 +18,9 @@ const useStyles = makeStyles((theme) =>
     },
     title: {
       fontWeight: 600,
+      [theme.breakpoints.down('xs')]: {
+        fontSize: '20vw',
+      },
     },
     subtitle: {
       fontSize: '2rem',
@@ -34,7 +37,7 @@ function Welcome() {
       </Grid>
       <Grid item xs={12} md={6}>
         <Typography variant="h1" className={classes.title} align="center">
-          PARTIOT WINGS
+          PARROT WINGS
         </Typography>
         <Typography variant={"body1"} className={classes.subtitle} align="center">
           The best money transfer system in the world!
